@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200, initial-scale=1.0">
+<title>5th Standard Mathematics Bilingual Question Paper Generator</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#eef3f8,#e8eef7);margin:0;padding:20px;color:#222}
+.container{max-width:950px;margin:auto}
+h1{text-align:center;color:#183b69}
+.subtitle{text-align:center;color:#555;margin-bottom:8px}
+.panel{background:#fff;margin:18px 0;padding:20px 25px;border-radius:12px;box-shadow:0 4px 15px #0001;border-left:6px solid #183b69}
+.green{border-left-color:#2e7d32}
+.orange{border-left-color:#f57c00}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{font-weight:bold;display:block;margin-bottom:5px}
+input,select{width:100%;padding:9px;border:1px solid #bbb;border-radius:8px;font-size:15px}
+.pill-row{display:flex;gap:12px;flex-wrap:wrap}
+.pill{padding:10px 18px;border:2px solid #ccd8e5;border-radius:24px;cursor:pointer}
+.pill input{width:auto}
+.pill.selected{background:#f57c00;color:#fff}
+button{background:#183b69;color:#fff;border:0;padding:12px 22px;border-radius:24px;cursor:pointer;margin:5px;font-weight:bold}
+.secondary{background:#607d9e}
+.reset{background:#b33}
+.answerBtn{background:#16865b}
+.btnrow{text-align:center;margin:18px}
+#paper{background:#fff;padding:15mm;width:210mm;min-height:297mm;margin:auto;box-shadow:0 2px 14px #0002;border:2px solid #222;line-height:1.6}
+.school-name{text-align:center;font-size:22px;font-weight:bold}
+.subject-line{text-align:center}
+.test-title{text-align:center;font-size:17px;font-weight:bold;margin:5px}
+.meta-row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:14px 0}
+.section-title{font-weight:bold;background:#eef2f8;padding:7px 10px;border-left:4px solid #183b69;margin-top:18px}
+ol{padding-left:25px}
+li{margin-bottom:10px}
+.qmark{color:#a33;font-weight:bold;font-size:13px}
+.marks-formula-box{text-align:center;font-weight:bold;margin-top:16px;padding:9px;border:2px dashed #183b69;background:#f4f8ff}
+.pdf-footer{text-align:center;border-top:1px solid #ccc;margin-top:28px;padding-top:6px;font-size:12px}
+#answerSection{display:none;page-break-before:always}
+.answer-title{text-align:center;color:#16865b;font-size:19px;font-weight:bold}
+
+@media print{
+  body{background:#fff;padding:0}
+  .no-print{display:none!important}
+  #paper{width:100%;box-shadow:none;border:2px solid #000}
+  @page{size:A4;margin:10mm}
+  #answerSection.print-with-answers{display:block!important}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1 class="no-print">5th Standard Mathematics Bilingual Question Paper Generator</h1>
+<div class="subtitle no-print">5th Standard Mathematics (Bilingual) – Part I | 2026-27</div>
+<div class="subtitle no-print" style="font-size:13px;color:#16865b">Questions are displayed in English and Kannada. Answers are provided in English.</div>
+
+<div class="panel no-print">
+  <h2>1. School and Examination Details</h2>
+  <div class="grid">
+    <div><label>School Name</label><input id="schoolName"></div>
+    <div><label>Subject</label><input value="Mathematics (Bilingual)"></div>
+    <div><label>Class</label><input value="5th Standard"></div>
+    <div><label>Academic Year</label><input id="year" value="2026-27"></div>
+    <div><label>Teacher Name</label><input id="teacher"></div>
+    <div><label>Date</label><input id="date" type="date"></div>
+  </div>
+</div>
+
+<div class="panel green no-print">
+  <h2>2. Select Chapter</h2>
+  <div class="grid">
+    <div><label>Chapter</label><select id="section"></select></div>
+    <div><label>Sub-Topic</label><select id="chapter"></select></div>
+  </div>
+</div>
+
+<div class="panel orange no-print">
+  <h2>3. Total Marks</h2>
+  <div class="pill-row">
+    <label class="pill"><input type="radio" name="marks" value="15"> 15 Marks</label>
+    <label class="pill selected"><input type="radio" name="marks" value="20" checked> 20 Marks</label>
+    <label class="pill"><input type="radio" name="marks" value="25"> 25 Marks</label>
+  </div>
+  <div class="btnrow">
+    <button onclick="generate()">Generate Question Paper</button>
+    <button class="secondary" onclick="shuffle()">Change Questions</button>
+    <button class="reset" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<!-- Blog Promotion Banner -->
+<div class="no-print" style="text-align:center;margin:15px 0;">
+  <a href="https://bilingualmediumschools.blogspot.com/2026/04/home-page.html"
+     target="_blank"
+     style="display:inline-block; background:#1565c0; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px; font-weight:bold; font-size:16px;">
+     ರಚನೆ: ಮನೋಹರ್ ಆರ್‌ ಕೆ.ಜಿ.ಎಫ್<br>
+    🌐 School Resource Centre – Click Here to Visit
+  </a>
+</div>
+
+</div>
+
+<div id="paper" style="display:none"></div>
+
+<div class="btnrow no-print" id="actions" style="display:none">
+  <button onclick="window.print()">Print A4</button>
+  <button class="secondary" onclick="addQuestion()">Add My Own Question</button>
+  <button class="answerBtn" onclick="toggleAnswers()">Answer Key</button>
+  <div><input id="includeAnswers" type="checkbox"> <label style="display:inline" for="includeAnswers">Include answers in print</label></div>
+</div>
+
+<script>
+const DATA = {
+  "Chapter 1 – We the Travellers - I (ನಾವು ಪ್ರಯಾಣಿಕರು - I)": [
+    {
+      "no": 1,
+      "name": "Large Numbers up to Ten Thousand and Rounding (ದೊಡ್ಡ ಸಂಖ್ಯೆಗಳು ಮತ್ತು ಸಮೀಪದ ಅಂದಾಜು)",
+      "type": "Arithmetic",
+      "q1": [
+        {"q": "What does TTh stand for in the place value chart? / ಸ್ಥಳಬೆಲೆ ಪಟ್ಟಿಯಲ್ಲಿ TTh ಎಂದರೆ ಏನು?", "a": "Ten Thousand"},
+        {"q": "What is the nearest ten of 2,346? / 2,346 ರ ಸಮೀಪದ ಹತ್ತು ಯಾವುದು?", "a": "2,350"},
+        {"q": "What is 10 thousands equal to? / 10 ಸಾವಿರಗಳು ಎಂದರೆ ಎಷ್ಟು?", "a": "Ten thousand (10,000)"},
+        {"q": "Write the number name for 10,001. / 10,001 ರ ಸಂಖ್ಯೆಯ ಹೆಸರು ಬರೆಯಿರಿ.", "a": "Ten thousand one"}
+      ],
+      "q2": [
+        {"q": "How do we round off a number to the nearest hundred? / ಒಂದು ಸಂಖ್ಯೆಯನ್ನು ಸಮೀಪದ ನೂರಕ್ಕೆ ಹೇಗೆ ಅಂದಾಜಿಸುತ್ತೇವೆ?", "a": "We look at the tens digit; if it is 5 or more, we round up to the next hundred, otherwise round down."},
+        {"q": "What is the difference between even and odd numbers? / ಸಮ ಮತ್ತು ಬೆಸ ಸಂಖ್ಯೆಗಳ ನಡುವಿನ ವ್ಯತ್ಯಾಸವೇನು?", "a": "Even numbers can be grouped perfectly in pairs, whereas odd numbers always leave a remainder of 1 when paired."}
+      ],
+      "q4": [
+        {"q": "Explain the Indian place value system for 5-digit numbers with an example. / 5-ಅಂಕಿಯ ಸಂಖ್ಯೆಗಳಿಗಾಗಿ ಭಾರತೀಯ ಸ್ಥಳಬೆಲೆ ಪದ್ಧತಿಯನ್ನು ಉದಾಹರಣೆಯೊಂದಿಗೆ ವಿವರಿಸಿ.", "a": "The Indian place value system for 5-digit numbers uses positions: Ones (O), Tens (T), Hundreds (H), Thousands (Th), and Ten Thousands (TTh). For example, in 45,867, the digit 4 is in the ten thousands place, representing 40,000."}
+      ]
+    }
+  ],
+  "Chapter 2 – Fractions (ಭಿನ್ನರಾಶಿಗಳು)": [
+    {
+      "no": 2,
+      "name": "Equivalent Fractions and Comparison (ಸಮಾನ ಭಿನ್ನರಾಶಿಗಳು ಮತ್ತು ಹೋಲಿಕೆ)",
+      "type": "Arithmetic",
+      "q1": [
+        {"q": "What are equivalent fractions? Give an example. / ಸಮಾನ ಭಿನ್ನರಾಶಿಗಳು ಎಂದರೇನು? ಉದಾಹರಣೆ ಕೊಡಿ.", "a": "Fractions that represent the same part of a whole, like 1/3 and 2/6."},
+        {"q": "Which fraction is greater: 2/3 or 1/3? / ಯಾವುದು ದೊಡ್ಡದು: 2/3 ಅಥವಾ 1/3?", "a": "2/3"},
+        {"q": "How many 1/4 pieces make a whole? / ಎಷ್ಟು 1/4 ತುಂಡುಗಳು ಸೇರಿ ಒಂದು ಪೂರ್ಣವಾಗುತ್ತವೆ?", "a": "4 pieces"},
+        {"q": "Express 5/2 as a mixed fraction. / 5/2 ಅನ್ನು ಮಿಶ್ರ ಭಿನ್ನರಾಶಿಯಾಗಿ ವ್ಯಕ್ತಪಡಿಸಿ.", "a": "2 1/2"}
+      ],
+      "q2": [
+        {"q": "How do you compare two fractions with the same denominator? / ಸಮ ಛೇದವಿರುವ ಎರಡು ಭಿನ್ನರಾಶಿಗಳನ್ನು ನೀವು ಹೇಗೆ ಹೋಲಿಸುತ್ತೀರಿ?", "a": "The fraction with the larger numerator is greater (e.g., 2/3 > 1/3)."},
+        {"q": "Why does 1/6 of a chocolate look smaller than 1/5 of the same chocolate? / ಒಂದು ಚಾಕೋಲೇಟ್‌ನ 1/6 ಭಾಗವು ಅದೇ ಚಾಕೋಲೇಟ್‌ನ 1/5 ಭಾಗಕ್ಕಿಂತ ಯಾಕೆ ಚಿಕ್ಕದಾಗಿ ಕಾಣುತ್ತದೆ?", "a": "Because when a whole is divided into more equal parts (6 parts instead of 5), each individual part becomes smaller."}
+      ],
+      "q4": [
+        {"q": "Describe how equivalent fractions can be generated and verified using a grid or fraction kit. / ಗ್ರಿಡ್ ಅಥವಾ ಭಿನ್ನರಾಶಿ ಕಿಟ್ ಬಳಸಿ ಸಮಾನ ಭಿನ್ನರಾಶಿಗಳನ್ನು ಹೇಗೆ ರಚಿಸಬಹುದು ಮತ್ತು ಪರಿಶೀಲಿಸಬಹುದು ಎಂದು ವಿವರಿಸಿ.", "a": "Equivalent fractions are generated by dividing wholes into finer equal subdivisions or multiplying numerator and denominator by the same number, showing identical shaded regions on a grid."}
+      ]
+    }
+  ],
+  "Chapter 3 – Angles as Turns (ತಿರುವುಗಳಾಗಿ ಕೋನಗಳು)": [
+    {
+      "no": 3,
+      "name": "Types of Angles and Clockwise Turns (ಕೋನಗಳ ವಿಧಗಳು ಮತ್ತು ತಿರುವುಗಳು)",
+      "type": "Geometry",
+      "q1": [
+        {"q": "What is a quarter turn equal to in terms of angles? / ಕಾಲು ತಿರುವು ಎಂದರೆ ಯಾವ ಕೋನ?", "a": "Right angle (90 degrees / 1/4 turn)"},
+        {"q": "An angle less than a right angle is called an ____. / ಲಂಬಕೋನಕ್ಕಿಂತ ಕಡಿಮೆ ಇರುವ ಕೋನವನ್ನು ____ ಎಂದು ಕರೆಯುತ್ತಾರೆ.", "a": "Acute angle (ಲಘುಕೋನ)"},
+        {"q": "What do we call a half-turn (straight line angle)? / ಅರ್ಧ ತಿರುವು ಅಥವಾ ನೇರ ರೇಖೆಯ ಕೋನವನ್ನು ಏನೆಂದು ಕರೆಯುತ್ತಾರೆ?", "a": "Straight angle (ಸರಳ ಕೋನ)"},
+        {"q": "In which direction do clock hands move: clockwise or anti-clockwise? / ಗಡಿಯಾರದ ಮುಳ್ಳುಗಳು ಯಾವ ದಿಕ್ಕಿನಲ್ಲಿ ಚಲಿಸುತ್ತವೆ?", "a": "Clockwise movement (ಪ್ರದಕ್ಷಿಣೆ ಚಲನೆ)"}
+      ],
+      "q2": [
+        {"q": "What is the difference between an acute angle and an obtuse angle? / ಲಘುಕೋನ ಮತ್ತು ಅಧಿಕ ಕೋನದ ನಡುವಿನ ವ್ಯತ್ಯಾಸವೇನು?", "a": "An acute angle is less than a right angle (less than 1/4 turn), whereas an obtuse angle is greater than a right angle but less than a straight angle."},
+        {"q": "How many minutes does the minute hand move in a 1/4 turn of a clock? / ಗಡಿಯಾರದ 1/4 ತಿರುವಿನಲ್ಲಿ ನಿಮಿಷದ ಮುಳ್ಳು ಎಷ್ಟು ನಿಮಿಷಗಳು ಚಲಿಸುತ್ತದೆ?", "a": "15 minutes"}
+      ],
+      "q4": [
+        {"q": "Describe how turns (fractions of a full circle) define different angles like right, acute, obtuse, and straight angles. / ವೃತ್ತದ ತಿರುವುಗಳು ಲಘು, ಲಂಬ, ಅಧಿಕ ಮತ್ತು ಸರಳ ಕೋನಗಳನ್ನು ಹೇಗೆ ವ್ಯಾಖ್ಯಾನಿಸುತ್ತವೆ ಎಂದು ವಿವರಿಸಿ.", "a": "Angles are measured as fractions of a full turn: 1/4 turn is a right angle, less than 1/4 is acute, between 1/4 and 1/2 is obtuse, and 1/2 turn is a straight angle."}
+      ]
+    }
+  ],
+  "Chapter 4 – We the Travellers - II (ನಾವು ಪ್ರಯಾಣಿಕರು - II)": [
+    {
+      "no": 4,
+      "name": "Addition and Subtraction of Large Numbers (ದೊಡ್ಡ ಸಂಖ್ಯೆಗಳ ಸಂಕಲನ ಮತ್ತು ವ್ಯವಕಲನ)",
+      "type": "Arithmetic",
+      "q1": [
+        {"q": "Solve: 28 + 75 = ? / ಬಿಡಿಸಿ: 28 + 75 = ?", "a": "103"},
+        {"q": "Solve: 65 - 18 = ? / ಬಿಡಿಸಿ: 65 - 18 = ?", "a": "47"},
+        {"q": "What is 1,855 km + 1,862 km? / 1,855 km + 1,862 km ಎಷ್ಟು?", "a": "3,717 km"},
+        {"q": "What are palindrome numbers? Give an example. / ಪ್ಯಾಲಿಂಡೋಮ್ ಸಂಖ್ಯೆಗಳು ಎಂದರೇನು? ಉದಾಹರಣೆ ಕೊಡಿ.", "a": "Numbers that read the same forward and backward, like 363."}
+      ],
+      "q2": [
+        {"q": "How do you perform addition with regrouping in 5-digit numbers? / 5-ಅಂಕಿಯ ಸಂಖ್ಯೆಗಳಲ್ಲಿ ಮರುಗುಂಪು ಮಾಡುವ ಮೂಲಕ ಹೇಗೆ ಸಂಕಲನ ಮಾಡಲಾಗುತ್ತದೆ?", "a": "When column sums exceed 9, we regroup 10 units of that place into 1 unit of the next higher place value column."},
+        {"q": "What is the relationship between addition and subtraction? / ಸಂಕಲನ ಮತ್ತು ವ್ಯವಕಲನದ ನಡುವಿನ ಸಂಬಂಧವೇನು?", "a": "Subtraction is the inverse operation of addition (e.g., if a + b = c, then c - b = a)."}
+      ],
+      "q4": [
+        {"q": "Describe the methods of quick mental math additions using nearest multiples or rounding strategies. / ಹತ್ತಿರದ ಗುಣಕಗಳು ಅಥವಾ ಅಂದಾಜು ತಂತ್ರಗಳನ್ನು ಬಳಸಿ ತ್ವರಿತ ಮೌಖಿಕ ಸಂಕಲನ ಮಾಡುವ ವಿಧಾನಗಳನ್ನು ವಿವರಿಸಿ.", "a": "We can add a round number like 20 or 100 and adjust by subtracting or adding the excess offset, simplifying complex mental calculations significantly."}
+      ]
+    }
+  ],
+  "Chapter 5 – Far and Near (ದೂರ ಮತ್ತು ಸಮೀಪ - Length Units)": [
+    {
+      "no": 5,
+      "name": "Metres, Centimetres, Millimetres and Kilometres (ಮೀಟರ್, ಸೆಂಟಿಮೀಟರ್, ಮಿಲಿಮೀಟರ್ ಮತ್ತು ಕಿಲೋಮೀಟರ್)",
+      "type": "Measurement",
+      "q1": [
+        {"q": "How many millimetres make 1 centimetre? / ಎಷ್ಟು ಮಿಲಿಮೀಟರ್‌ಗಳು ಸೇರಿ 1 ಸೆಂಟಿಮೀಟರ್ ಆಗುತ್ತವೆ?", "a": "10 mm"},
+        {"q": "How many metres make 1 kilometre? / ಎಷ್ಟು ಮೀಟರ್‌ಗಳು ಸೇರಿ 1 ಕಿಲೋಮೀಟರ್ ಆಗುತ್ತವೆ?", "a": "1,000 m"},
+        {"q": "Convert 5 metres into centimetres. / 5 ಮೀಟರ್ ಅನ್ನು ಸೆಂಟಿಮೀಟರ್‌ಗಳಿಗೆ ಪರಿವರ್ತಿಸಿ.", "a": "500 cm"},
+        {"q": "What is the perimeter of a shape? / ಆಕೃತಿಯ ಸುತ್ತಳತೆ ಎಂದರೇನು?", "a": "The length of the boundary of a closed shape."}
+      ],
+      "q2": [
+        {"q": "How do you convert millimetres to centimetres? Give an example. / ಮಿಲಿಮೀಟರ್‌ಗಳನ್ನು ಸೆಂಟಿಮೀಟರ್‌ಗಳಿಗೆ ಹೇಗೆ ಪರಿವರ್ತಿಸುವಿರಿ? ಉದಾಹರಣೆ ಕೊಡಿ.", "a": "Divide by 10 (e.g., 89 mm = 8 cm 9 mm)."},
+        {"q": "Why do we use smaller units like millimetres? / ಮಿಲಿಮೀಟರ್‌ನಂತಹ ಸಣ್ಣ ಏಕಮಾನಗಳನ್ನು ನಾವು ಯಾಕೆ ಬಳಸುತ್ತೇವೆ?", "a": "To measure very small objects with high precision and accuracy."}
+      ],
+      "q4": [
+        {"q": "Describe the conversions and relationships between mm, cm, m, and km. / mm, cm, m ಮತ್ತು km ನಡುವಿನ ಪರಿವರ್ತನೆಗಳು ಹಾಗೂ ಸಂಬಂಧಗಳನ್ನು ವಿವರಿಸಿ.", "a": "The metric system uses base-10 and base-1000 multipliers: 10 mm = 1 cm, 100 cm = 1 m, and 1,000 m = 1 km, allowing seamless conversion between units."}
+      ]
+    }
+  ],
+  "Chapter 6 – The Dairy Farm (ಡೈರಿ ಫಾರ್ಮ್ - Multiplication)": [
+    {
+      "no": 6,
+      "name": "Multiplication Strategies and Word Problems (ಗುಣಾಕಾರ ತಂತ್ರಗಳು ಮತ್ತು ಸಮಸ್ಯೆಗಳು)",
+      "type": "Arithmetic",
+      "q1": [
+        {"q": "What is the product of 30 and 20? / 30 ಮತ್ತು 20 ರ ಗುಣಲಬ್ಧ ಎಷ್ಟು?", "a": "600"},
+        {"q": "What happens when you multiply a number by 1,000? / ಒಂದು ಸಂಖ್ಯೆಯನ್ನು 1,000 ದಿಂದ ಗುಣಿಸಿದಾಗ ಏನಾಗುತ್ತದೆ?", "a": "It becomes 1,000 times larger, shifting digits three places to the left."},
+        {"q": "Solve using doubling and halving: 5 x 18 = ? / ಅರ್ಧ ಮತ್ತು ದ್ವಿಗುಣಗೊಳಿಸುವಿಕೆ ಬಳಸಿ ಬಿಡಿಸಿ: 5 x 18 = ?", "a": "90 (10 x 9 = 90)"},
+        {"q": "Solve: 32 x 8 = ? / ಬಿಡಿಸಿ: 32 x 8 = ?", "a": "256"}
+      ],
+      "q2": [
+        {"q": "Explain the doubling and halving strategy in multiplication. / ಗುಣಾಕಾರದಲ್ಲಿ ಅರ್ಧ ಮತ್ತು ದ್ವಿಗುಣಗೊಳಿಸುವ ತಂತ್ರವನ್ನು ವಿವರಿಸಿ.", "a": "Halving one factor while doubling the other factor keeps the overall product unchanged, making mental math easier."},
+        {"q": "How do you multiply using the nearest multiple strategy? Give an example like 4 x 19. / ಹತ್ತಿರದ ಗುಣಕ ತಂತ್ರ ಬಳಸಿ ಹೇಗೆ ಗುಣಿಸುತ್ತೀರಿ? 4 x 19 ಉದಾಹರಣೆ ನೀಡಿ.", "a": "We replace 19 with (20 - 1), so 4 x 19 = (4 x 20) - (4 x 1) = 80 - 4 = 76."}
+      ],
+      "q4": [
+        {"q": "Describe the expanded column multiplication method for large numbers with an example. / ದೊಡ್ಡ ಸಂಖ್ಯೆಗಳಿಗೆ ವಿಸ್ತೃತ ಕಾಲಮ್ ಗುಣಾಕಾರ ವಿಧಾನವನ್ನು ಉದಾಹರಣೆಯೊಂದಿಗೆ ವಿವರಿಸಿ.", "a": "Expanded multiplication breaks numbers into place values (hundreds, tens, ones) and multiplies each part separately before summing up the partial products, aligning with place value principles."}
+      ]
+    }
+  ]
+};
+
+const GRAMMAR = [
+  {"q": "What is the smallest 4-digit number? / ನಾಲ್ಕು-ಅಂಕಿಯ ಅತ್ಯಂತ ಚಿಕ್ಕ ಸಂಖ್ಯೆ ಯಾವುದು?", "a": "1,000"},
+  {"q": "How many mm make 1 cm? / ಎಷ್ಟು mm ಸೇರಿ 1 cm ಆಗುತ್ತದೆ?", "a": "10 mm"},
+  {"q": "Solve: 10,000 - 400 = ? / ಬಿಡಿಸಿ: 10,000 - 400 = ?", "a": "9,600"},
+  {"q": "What is a quarter turn equal to? / ಕಾಲು ತಿರುವು ಎಂದರೆ ಏನು?", "a": "Right angle (90 degrees)"},
+  {"q": "Is 1,001 even or odd? / 1,001 ಸಮವೇ ಅಥವಾ ಬೆಸವೇ?", "a": "Odd number"},
+  {"q": "What is 1 km equal to in metres? / 1 km ಎಂದರೆ ಎಷ್ಟು ಮೀಟರ್?", "a": "1,000 m"}
+];
+
+const section = document.getElementById('section');
+const chapter = document.getElementById('chapter');
+
+Object.keys(DATA).forEach(k => {
+  let o = document.createElement('option');
+  o.value = k;
+  o.textContent = k;
+  section.appendChild(o);
+});
+
+function fill() {
+  chapter.innerHTML = '';
+  if (DATA[section.value]) {
+    DATA[section.value].forEach((x, i) => {
+      let o = document.createElement('option');
+      o.value = i;
+      o.textContent = x.no + '. ' + x.name;
+      chapter.appendChild(o);
+    });
+  }
+}
+
+section.onchange = fill;
+fill();
+
+document.querySelectorAll('input[name=marks]').forEach(x => x.onchange = () => {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+  x.parentElement.classList.add('selected');
+});
+
+let current = null, marks = 20, generated = {a: [], b: [], c: []};
+
+function pick(arr, n) {
+  let c = [...arr], o = [];
+  while (o.length < n && c.length) o.push(c.splice(Math.floor(Math.random() * c.length), 1)[0]);
+  return o;
+}
+
+function pool(k) {
+  return [...(current[k] || []), ...GRAMMAR];
+}
+
+function buildSet() {
+  let p = marks === 15 ? {a: 9, b: 3, c: 0} : marks === 20 ? {a: 10, b: 3, c: 1} : {a: 9, b: 4, c: 2};
+  generated.a = pick(pool('q1'), p.a);
+  generated.b = pick(pool('q2'), p.b);
+  generated.c = pick(pool('q4'), p.c);
+}
+
+function generate() {
+  current = DATA[section.value][+chapter.value];
+  marks = +document.querySelector('input[name=marks]:checked').value;
+  buildSet();
+  render();
+}
+
+function shuffle() {
+  if (!current) { generate(); return; }
+  buildSet();
+  render();
+}
+
+function qhtml(a, m) {
+  return a.map(x => '<li class="paper-question" data-mark="' + m + '" contenteditable="true">' + x.q + ' <span class="qmark">[' + m + ' Mark' + (m > 1 ? 's' : '') + ']</span></li>').join('');
+}
+
+function ahtml(a) {
+  return a.map(x => '<li><b>Question:</b> ' + x.q + '<br><b>Answer:</b> ' + x.a + '</li>').join('');
+}
+
+function render() {
+  let a = generated.a, b = generated.b, c = generated.c, total = a.length + b.length * 2 + c.length * 4, school = document.getElementById('schoolName').value || '____________________________ SCHOOL';
+  document.getElementById('paper').innerHTML = '<div class="school-name" contenteditable="true">' + school + '</div><div class="subject-line">Mathematics (Bilingual - English/Kannada) | 5th Standard | ' + document.getElementById('year').value + '</div><div class="test-title">' + current.no + '. ' + current.name + '</div><hr><div class="meta-row"><div><b>Teacher:</b> ' + (document.getElementById('teacher').value || '____________') + '</div><div><b>Date:</b> ' + (document.getElementById('date').value || '____________') + '</div><div><b>Total Marks:</b> ' + total + '</div><div><b>Time:</b> __________</div></div><hr><div class="marks-formula-box">Part A = 1 mark each | Part B = 2 marks each | Part C = 4 marks each</div><div class="section-title">Part A: Answer the following questions. (1 Mark each / ಒಂದು ಅಂಕದ ಪ್ರಶ್ನೆಗಳು)</div><ol id="partA">' + qhtml(a, 1) + '</ol><div class="section-title">Part B: Answer the following questions. (2 Marks each / ಎರಡು ಅಂಕದ ಪ್ರಶ್ನೆಗಳು)</div><ol id="partB">' + qhtml(b, 2) + '</ol><div class="section-title">Part C: Answer the following in detail. (4 Marks each / ವಿವರವಾದ ಪ್ರಶ್ನೆಗಳು)</div><ol id="partC">' + qhtml(c, 4) + '</ol><div class="marks-formula-box" id="totalBox">Total Marks = ' + total + '</div><div style="text-align:center;margin-top:20px;font-weight:bold">*** All The Best / ಶುಭ ಹಾರೈಕೆಗಳು ***</div><div class="pdf-footer"><b>SCHOOL RESOURCE CENTER</b></div><div id="answerSection"><div class="answer-title">Answer Key (Answers in English)</div><div class="section-title">Part A Answers</div><ol>' + ahtml(a) + '</ol><div class="section-title">Part B Answers</div><ol>' + ahtml(b) + '</ol><div class="section-title">Part C Answers</div><ol>' + ahtml(c) + '</ol></div>';
+  document.getElementById('paper').style.display = 'block';
+  document.getElementById('actions').style.display = 'block';
+}
+
+function updateTotal() {
+  let t = 0;
+  document.querySelectorAll('#paper .paper-question').forEach(x => t += Number(x.dataset.mark || 0));
+  document.getElementById('totalBox').textContent = 'Total Marks = ' + t;
+  document.querySelector('#paper .meta-row div:nth-child(3)').innerHTML = '<b>Total Marks:</b> ' + t;
+}
+
+function addQuestion() {
+  if (!current) { generate(); return; }
+  let m = prompt('Enter marks for your question: 1, 2 or 4', '1');
+  if (m === null) return;
+  m = Number(m);
+  if (![1, 2, 4].includes(m)) { alert('Please enter only 1, 2 or 4 marks.'); return; }
+  let q = prompt('Type your question (English / ಕನ್ನಡ):');
+  if (!q || !q.trim()) return;
+  let target = m === 1 ? document.getElementById('partA') : m === 2 ? document.getElementById('partB') : document.getElementById('partC');
+  let li = document.createElement('li');
+  li.className = 'paper-question';
+  li.dataset.mark = m;
+  li.contentEditable = 'true';
+  li.innerHTML = q.trim() + ' <span class="qmark">[' + m + ' Mark' + (m > 1 ? 's' : '') + ']</span>';
+  target.appendChild(li);
+  updateTotal();
+}
+
+function toggleAnswers() {
+  let x = document.getElementById('answerSection');
+  if (x) x.style.display = x.style.display === 'block' ? 'none' : 'block';
+}
+
+document.getElementById('includeAnswers').onchange = e => {
+  let x = document.getElementById('answerSection');
+  if (x) x.classList.toggle('print-with-answers', e.target.checked);
+};
+
+function resetAll() { location.reload(); }
+</script>
+</body>
+</html>
